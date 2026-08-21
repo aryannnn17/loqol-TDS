@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AgentUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deals        Deal[]
+}
+
+model Seller {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deals     Deal[]
+}
+
+model Deal {
+  id                    String           @id @default(cuid())
+  title                 String
+  propertyAddress       String
+  city                  String
+  county                String
+  propertyDescription   String
+  seller1Name           String
+  seller1Email          String
+  seller2Name           String?
+  seller2Email          String?
+  status                DealStatus       @default(DRAFT)
+  docusealStatus        String?
+  docusealTemplateId    String?
+  docusealSubmissionId  String?
+  docusealEmbedUrl      String?
+  requestTokenHash      String?          @unique
+  requestTokenExpiresAt DateTime?
+  requestSentAt         DateTime?
+  sellerStartedAt       DateTime?
+  sellerSubmittedAt     DateTime?
+  lastSavedAt           DateTime?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  agentId               String
+  sellerId              String
+  agent                 AgentUser        @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  seller                Seller           @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  answerRevisions       AnswerRevision[]
+  voiceTurns            VoiceTurn[]
+}
+
+model AnswerRevision {
+  id          String       @id @default(cuid())
+  questionKey String
+  normalized  String
+  rawText     String?
+  source      AnswerSource
+  createdAt   DateTime     @default(now())
+  dealId      String
+  deal        Deal         @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, questionKey, createdAt(sort: Desc)])
+}
+
+model VoiceTurn {
+  id          String   @id @default(cuid())
+  questionKey String
+  speaker     String
+  transcript  String
+  createdAt   DateTime @default(now())
+  dealId      String
+  deal        Deal     @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, createdAt(sort: Asc)])
+}
+
+enum DealStatus {
+  DRAFT
+  REQUEST_SENT
+  IN_PROGRESS
+  SUBMITTED
+  READY_FOR_SIGNATURE
+  SIGNATURE_SENT
+}
+
+enum AnswerSource {
+  FORM
+  VOICE
+  AGENT_REVIEW
+  SYSTEM
+}
