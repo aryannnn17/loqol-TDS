@@ -6,8 +6,8 @@ This project is built as a take-home prototype, so it optimizes for product clar
 
 ## Submission Notes
 
-- Deployed URL: not included from this local environment
-- Repo: this workspace
+- Deployed URL: https://loqol.vercel.app
+- Repo: https://github.com/aryannnn17/loqol-TDS
 - Current local verification date: Friday, August 21, 2026
 
 ## Stack
