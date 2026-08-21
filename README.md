@@ -232,6 +232,14 @@ That is easier to reason about and easier to defend in an interview.
 
 The DocuSeal code path is implemented, but I did not live-verify it against a real sandbox key in this environment. The local filled-PDF flow is fully wired and verified. With sandbox credentials added, the draft handoff should be the next thing to validate manually.
 
+The current DocuSeal field scaffold covers Seller 1 and Seller 2 signatures, dates, and per-page initials. Buyer and agent signature orchestration is intentionally not created because the app does not collect those participant emails yet.
+
+## Email Delivery
+
+Seller request links are generated every time the agent sends or refreshes a disclosure request.
+
+If `RESEND_API_KEY` is configured, the app also sends the request by email using Resend. If it is not configured, the agent still gets the secure link in the UI and can share it manually. That keeps the take-home runnable without paid services while leaving a real email path in place.
+
 ## Setup
 
 ### 1. Install dependencies
@@ -278,12 +286,16 @@ Open `http://localhost:3000`.
 - `APP_SECRET`
 - `DOCUSEAL_KEY`
 - `DOCUSEAL_BASE_URL`
+- `NEXT_PUBLIC_APP_URL`
+- `RESEND_API_KEY`
+- `EMAIL_FROM`
 
 For the Vercel prototype deployment, use:
 
 - `DATABASE_URL=file:/tmp/loqol.db`
 - `LOQOL_BOOTSTRAP_RUNTIME_DB=true`
 - a long random `APP_SECRET`
+- `NEXT_PUBLIC_APP_URL=https://loqol.vercel.app`
 
 That keeps the demo self-starting on Vercel's serverless filesystem. It is intentionally a prototype choice; a production app should use Postgres.
 
@@ -292,24 +304,26 @@ That keeps the demo self-starting on Vercel's serverless filesystem. It is inten
 - `npm run dev`
 - `npm run build`
 - `npm run lint`
+- `npm test`
 - `npm run db:push`
 - `npm run db:seed`
 
 ## What I Would Build Next
 
-- real email delivery for seller requests
+- hosted Postgres for durable production persistence
 - seller identity confirmation beyond a raw secure link
 - richer contradiction resolution UI with explicit compare/choose actions
-- live DocuSeal sandbox validation and role-complete signer placement
+- live DocuSeal sandbox validation with the real API key
+- buyer/agent signature participants once their emails are collected
 - more complete page-1 field coverage
 - streaming LLM-backed explanation / extraction for the voice assistant instead of the current deterministic parser
 - better autosave batching and offline recovery
 
 ## Known Omissions
 
-- no production email provider
-- no deployed URL from this environment
-- no buyer/agent signature orchestration beyond the scaffolded DocuSeal draft path
+- no durable production database until Postgres credentials are configured
+- no live DocuSeal sandbox validation without `DOCUSEAL_KEY`
+- no buyer/agent signature orchestration until those participant records are part of the data model
 - voice flow uses browser speech APIs plus rule-based normalization, not a fully model-driven real-time agent
 
 ## Verification
@@ -318,6 +332,8 @@ Verified locally on Friday, August 21, 2026:
 
 - `npm run lint`
 - `npm run build`
+- `npm test`
+- `npm audit`
 - `npm run db:seed`
 
-`next build` succeeds. Prisma emits Turbopack tracing warnings because the generated Prisma client performs dynamic filesystem access internally; the build still completes successfully.
+The deployed Vercel app was also smoke-tested at `https://loqol.vercel.app`, including the homepage, seeded seller dashboard, and invalid-token API rejection.

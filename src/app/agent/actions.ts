@@ -9,6 +9,7 @@ import {
   sendDisclosureRequest,
 } from "@/lib/disclosure-store";
 import { createDocusealDraft } from "@/lib/docuseal";
+import { getAppBaseUrl, sendDisclosureEmail } from "@/lib/email";
 import { prisma } from "@/lib/prisma";
 
 export async function logoutAction() {
@@ -45,7 +46,21 @@ export async function sendDisclosureAction(formData: FormData) {
   }
 
   const request = await sendDisclosureRequest(dealId);
-  redirect(`/agent/deals/${dealId}?sent=${encodeURIComponent(request.url)}`);
+  const absoluteRequestUrl = `${getAppBaseUrl()}${request.url}`;
+  const email = await sendDisclosureEmail({
+    to: deal.seller1Email,
+    sellerName: deal.seller1Name,
+    dealTitle: deal.title,
+    propertyAddress: deal.propertyAddress,
+    requestUrl: absoluteRequestUrl,
+  });
+
+  const params = new URLSearchParams({
+    sent: absoluteRequestUrl,
+    email: email.ok ? "sent" : email.reason,
+  });
+
+  redirect(`/agent/deals/${dealId}?${params.toString()}`);
 }
 
 export async function createDocusealAction(formData: FormData) {

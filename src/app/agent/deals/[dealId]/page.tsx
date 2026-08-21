@@ -10,7 +10,7 @@ export default async function DealDetailPage({
   searchParams,
 }: {
   params: Promise<{ dealId: string }>;
-  searchParams: Promise<{ sent?: string }>;
+  searchParams: Promise<{ email?: string; sent?: string }>;
 }) {
   const { dealId } = await params;
   const query = await searchParams;
@@ -83,6 +83,15 @@ export default async function DealDetailPage({
               <div className="mt-5 rounded-[1.5rem] bg-emerald-50 p-5">
                 <p className="text-sm font-medium text-emerald-900">Seller link ready</p>
                 <p className="mt-2 break-all text-sm text-emerald-800">{query.sent}</p>
+                {query.email === "sent" ? (
+                  <p className="mt-3 text-sm text-emerald-800">
+                    Email sent to {state.deal.seller1Email}.
+                  </p>
+                ) : (
+                  <p className="mt-3 text-sm text-emerald-800">
+                    Email delivery is not configured, so share this secure link manually.
+                  </p>
+                )}
               </div>
             ) : null}
 
@@ -186,4 +195,3 @@ export default async function DealDetailPage({
     </main>
   );
 }
-

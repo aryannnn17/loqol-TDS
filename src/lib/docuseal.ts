@@ -17,11 +17,16 @@ type SignatureField = {
 };
 
 const signatureFields: SignatureField[] = [
+  { type: "initials", role: "Seller 1", page: 1, x: 0.66, y: 0.055, width: 0.12, height: 0.02 },
+  { type: "initials", role: "Seller 2", page: 1, x: 0.79, y: 0.055, width: 0.12, height: 0.02 },
+  { type: "initials", role: "Seller 1", page: 2, x: 0.66, y: 0.055, width: 0.12, height: 0.02 },
+  { type: "initials", role: "Seller 2", page: 2, x: 0.79, y: 0.055, width: 0.12, height: 0.02 },
+  { type: "initials", role: "Seller 1", page: 3, x: 0.66, y: 0.055, width: 0.12, height: 0.02 },
+  { type: "initials", role: "Seller 2", page: 3, x: 0.79, y: 0.055, width: 0.12, height: 0.02 },
   { type: "signature", role: "Seller 1", page: 3, x: 0.12, y: 0.11, width: 0.28, height: 0.03 },
   { type: "date", role: "Seller 1", page: 3, x: 0.74, y: 0.11, width: 0.16, height: 0.03 },
   { type: "signature", role: "Seller 2", page: 3, x: 0.12, y: 0.085, width: 0.28, height: 0.03 },
   { type: "date", role: "Seller 2", page: 3, x: 0.74, y: 0.085, width: 0.16, height: 0.03 },
-  { type: "initials", role: "Seller 1", page: 1, x: 0.66, y: 0.055, width: 0.12, height: 0.02 },
 ];
 
 async function docusealFetch(path: string, body: unknown) {
@@ -97,4 +102,3 @@ export async function createDocusealDraft(
       )?.embed_src ?? null,
   };
 }
-
