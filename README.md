@@ -8,14 +8,14 @@ This project is built as a take-home prototype, so it optimizes for product clar
 
 - Deployed URL: https://loqol.vercel.app
 - Repo: https://github.com/aryannnn17/loqol-TDS
-- Current local verification date: Friday, August 21, 2026
+- Current local verification date: Sunday, August 23, 2026
 
 ## Stack
 
 - Next.js 16 App Router
 - React 19
 - TypeScript
-- Prisma + SQLite
+- Prisma + Supabase Postgres
 - `pdf-lib` for local TDS generation
 - Browser Web Speech APIs for in-browser voice input/output
 
@@ -120,7 +120,7 @@ The current answer set is derived from the latest revision for each key.
 
 Agent auth uses:
 
-- hashed password stored in SQLite with `bcryptjs`
+- hashed password stored in Postgres with `bcryptjs`
 - signed `httpOnly` session cookie using `jose`
 
 This means:
@@ -230,7 +230,7 @@ That is easier to reason about and easier to defend in an interview.
 
 ### Current limitation
 
-The DocuSeal code path is implemented, but I did not live-verify it against a real sandbox key in this environment. The local filled-PDF flow is fully wired and verified. With sandbox credentials added, the draft handoff should be the next thing to validate manually.
+The DocuSeal code path is implemented and `DOCUSEAL_KEY` is configured in production. The final validation step is to create a draft from the agent deal page and confirm the submission appears in DocuSeal with signer fields in the expected locations.
 
 The current DocuSeal field scaffold covers Seller 1 and Seller 2 signatures, dates, and per-page initials. Buyer and agent signature orchestration is intentionally not created because the app does not collect those participant emails yet.
 
@@ -319,13 +319,12 @@ The current production deployment uses Supabase Postgres so disclosure answers s
 
 ## Known Omissions
 
-- no live DocuSeal sandbox validation without `DOCUSEAL_KEY`
-- no buyer/agent signature orchestration until those participant records are part of the data model
+- buyer/agent signature orchestration is not automated until those participant records are part of the data model
 - voice flow uses browser speech APIs plus rule-based normalization, not a fully model-driven real-time agent
 
 ## Verification
 
-Verified locally on Friday, August 21, 2026:
+Verified locally on Sunday, August 23, 2026:
 
 - `npm run lint`
 - `npm run build`
