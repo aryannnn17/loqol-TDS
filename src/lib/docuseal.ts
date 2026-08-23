@@ -16,6 +16,13 @@ type SignatureField = {
   height: number;
 };
 
+type DocusealSubmitter = {
+  role?: string;
+  submission_id?: number | string;
+  slug?: string;
+  embed_src?: string;
+};
+
 const signatureFields: SignatureField[] = [
   { type: "initials", role: "Seller 1", page: 1, x: 0.66, y: 0.055, width: 0.12, height: 0.02 },
   { type: "initials", role: "Seller 2", page: 1, x: 0.79, y: 0.055, width: 0.12, height: 0.02 },
@@ -89,16 +96,18 @@ export async function createDocusealDraft(
     template_id: template.id,
     send_email: false,
     submitters,
-  });
+  }) as DocusealSubmitter[];
+
+  const seller1Submitter = submission.find(
+    (submitter) => submitter.role === "Seller 1",
+  );
 
   return {
     ok: true as const,
     templateId: String(template.id),
-    submissionId: String(submission.id),
-    embedUrl:
-      submission.submitters?.find(
-        (submitter: { role?: string; slug?: string; embed_src?: string }) =>
-          submitter.role === "Seller 1",
-      )?.embed_src ?? null,
+    submissionId: String(
+      seller1Submitter?.submission_id ?? submission[0]?.submission_id ?? "",
+    ),
+    embedUrl: seller1Submitter?.embed_src ?? null,
   };
 }
