@@ -296,7 +296,7 @@ For deployment, use a hosted Postgres database:
 - a long random `APP_SECRET`
 - `NEXT_PUBLIC_APP_URL=https://loqol.vercel.app`
 
-The current production deployment uses Supabase Postgres so disclosure answers survive cold starts and redeploys.
+The current production deployment uses Supabase Postgres so disclosure answers survive cold starts and redeploys. On Vercel, use the Supabase transaction pooler with `pgbouncer=true&connection_limit=1` so serverless functions do not exhaust session-pool connections.
 
 ## Scripts
 
