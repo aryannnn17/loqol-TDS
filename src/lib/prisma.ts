@@ -18,9 +18,12 @@ function hashToken(value: string) {
 }
 
 function shouldBootstrapRuntimeDb() {
+  const databaseUrl = process.env.DATABASE_URL ?? "";
+
   return (
-    process.env.LOQOL_BOOTSTRAP_RUNTIME_DB === "true" ||
-    (process.env.VERCEL === "1" && process.env.DATABASE_URL?.startsWith("file:"))
+    databaseUrl.startsWith("file:") &&
+    (process.env.LOQOL_BOOTSTRAP_RUNTIME_DB === "true" ||
+      process.env.VERCEL === "1")
   );
 }
 

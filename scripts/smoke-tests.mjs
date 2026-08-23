@@ -3,7 +3,7 @@ import { existsSync } from "node:fs";
 
 const token = "seller_demo_wm0KYwU4uYj0gQ5Xk3At4mWJxGc7Zx5L";
 const port = process.env.PORT ?? "3137";
-const baseUrl = process.env.SMOKE_BASE_URL ?? `http://127.0.0.1:${port}`;
+const baseUrl = process.env.SMOKE_BASE_URL ?? `http://localhost:${port}`;
 
 let server;
 
@@ -44,12 +44,7 @@ async function main() {
     );
 
     server = spawn("npm", ["run", "start", "--", "-p", port], {
-      env: {
-        ...process.env,
-        DATABASE_URL: process.env.DATABASE_URL ?? "file:./dev.db",
-        LOQOL_BOOTSTRAP_RUNTIME_DB:
-          process.env.LOQOL_BOOTSTRAP_RUNTIME_DB ?? "true",
-      },
+      env: process.env,
       stdio: "ignore",
     });
 
@@ -57,12 +52,18 @@ async function main() {
   }
 
   const home = await fetchText("/");
-  assert(home.response.ok, "Homepage loads");
+  assert(home.response.ok, `Homepage loads (${home.response.status})`);
   assert(home.text.includes("Loqol demo"), "Homepage renders expected copy");
 
   const seller = await fetchText(`/seller/${token}`);
-  assert(seller.response.ok, "Seeded seller dashboard loads");
-  assert(seller.text.includes("Seller dashboard"), "Seller dashboard renders");
+  assert(
+    seller.response.ok,
+    `Seeded seller dashboard loads (${seller.response.status}): ${seller.text.slice(0, 300)}`,
+  );
+  assert(
+    seller.text.includes("Seller dashboard"),
+    `Seller dashboard renders: ${seller.text.slice(0, 300)}`,
+  );
   assert(seller.text.includes("35"), "Seeded progress renders");
 
   const invalid = await fetchText("/api/seller/invalid-token/submit", {

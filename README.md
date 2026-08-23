@@ -290,14 +290,13 @@ Open `http://localhost:3000`.
 - `RESEND_API_KEY`
 - `EMAIL_FROM`
 
-For the Vercel prototype deployment, use:
+For deployment, use a hosted Postgres database:
 
-- `DATABASE_URL=file:/tmp/loqol.db`
-- `LOQOL_BOOTSTRAP_RUNTIME_DB=true`
+- `DATABASE_URL=postgresql://...`
 - a long random `APP_SECRET`
 - `NEXT_PUBLIC_APP_URL=https://loqol.vercel.app`
 
-That keeps the demo self-starting on Vercel's serverless filesystem. It is intentionally a prototype choice; a production app should use Postgres.
+The current production deployment uses Supabase Postgres so disclosure answers survive cold starts and redeploys.
 
 ## Scripts
 
@@ -310,7 +309,6 @@ That keeps the demo self-starting on Vercel's serverless filesystem. It is inten
 
 ## What I Would Build Next
 
-- hosted Postgres for durable production persistence
 - seller identity confirmation beyond a raw secure link
 - richer contradiction resolution UI with explicit compare/choose actions
 - live DocuSeal sandbox validation with the real API key
@@ -321,7 +319,6 @@ That keeps the demo self-starting on Vercel's serverless filesystem. It is inten
 
 ## Known Omissions
 
-- no durable production database until Postgres credentials are configured
 - no live DocuSeal sandbox validation without `DOCUSEAL_KEY`
 - no buyer/agent signature orchestration until those participant records are part of the data model
 - voice flow uses browser speech APIs plus rule-based normalization, not a fully model-driven real-time agent
